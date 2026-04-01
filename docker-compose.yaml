@@ -1,0 +1,22 @@
+
+
+services:
+  mysql-db:
+    image: mysql:8.0
+    container_name: netbook_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: netbook_db
+      MYSQL_USER: netbook_user
+      MYSQL_PASSWORD: netbook_password
+    ports:
+      - "3307:3306"
+    volumes:
+      # Guarda los datos para que no se borren si apagas el contenedor
+      - mysql_data:/var/lib/mysql
+      # Ejecuta este script SQL automáticamente al crearse
+      - ./backend/src/main/resources/db/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  mysql_data:

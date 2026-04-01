@@ -1,0 +1,10 @@
+-- init.sql
+CREATE TABLE IF NOT EXISTS usuarios (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    email VARCHAR(150) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    rol VARCHAR(20) NOT NULL DEFAULT 'LECTOR',
+    avatar_url VARCHAR(255),
+    fecha_registro DATETIME DEFAULT CURRENT_TIMESTAMP
+);

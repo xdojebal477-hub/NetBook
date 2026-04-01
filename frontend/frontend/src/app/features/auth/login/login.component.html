@@ -1,0 +1,9 @@
+<div class="login-container">
+<h2>Login NetBook</h2>
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+<div><label>Email: </label><input type="email" formControlName="email"></div>
+<div><label>Password: </label><input type="password" formControlName="password"></div>
+<button type="submit" [disabled]="loginForm.invalid">Entrar</button>
+</form>
+<p>¿No tienes cuenta? <a routerLink="/registro">Regístrate</a></p>
+</div>

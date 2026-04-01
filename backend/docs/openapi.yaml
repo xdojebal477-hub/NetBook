@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: NetBook API
+  description: API REST para la plataforma NetBook (Biblioteca Digital y Red Social).
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080
+    description: Servidor Local (Spring Boot)
+
+paths:
+  /api/auth/registro:
+    post:
+      summary: Registrar un nuevo usuario
+      description: Crea un nuevo usuario en el sistema con un rol específico (Lector o Autor).
+      tags:
+        - Autenticación
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegistroRequest'
+      responses:
+        '201':
+          description: Usuario creado exitosamente
+        '400':
+          description: Error de validación (ej. email ya existe)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/auth/login:
+    post:
+      summary: Iniciar sesión
+      description: Autentica a un usuario y devuelve un token JWT para las siguientes peticiones.
+      tags:
+        - Autenticación
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login exitoso. Devuelve el Token JWT.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
+          description: Credenciales inválidas
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    RegistroRequest:
+      type: object
+      required:
+        - nombre
+        - email
+        - password
+        - rol
+      properties:
+        nombre:
+          type: string
+          example: "Daniel Ojeda"
+        email:
+          type: string
+          format: email
+          example: "daniel@netbook.com"
+        password:
+          type: string
+          format: password
+          example: "MiPasswordSeguro123"
+        rol:
+          type: string
+          enum: [LECTOR, AUTOR, ADMIN]
+          example: "AUTOR"
+
+    LoginRequest:
+      type: object
+      required:
+        - email
+        - password
+      properties:
+        email:
+          type: string
+          format: email
+          example: "daniel@netbook.com"
+        password:
+          type: string
+          format: password
+          example: "MiPasswordSeguro123"
+
+    AuthResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JSON Web Token para autorización
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        tipo:
+          type: string
+          example: "Bearer"
+        usuario:
+          type: object
+          properties:
+            id:
+              type: integer
+              example: 1
+            nombre:
+              type: string
+              example: "Daniel Ojeda"
+            rol:
+              type: string
+              example: "AUTOR"
+
+    ErrorResponse:
+      type: object
+      properties:
+        mensaje:
+          type: string
+          example: "Las credenciales proporcionadas no son válidas."
+        fecha:
+          type: string
+          format: date-time

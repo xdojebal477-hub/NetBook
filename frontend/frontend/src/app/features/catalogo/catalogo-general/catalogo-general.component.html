@@ -1,0 +1,44 @@
+<div class="catalogo-container">
+  <h1>Descubre Grandes Obras</h1>
+  
+  <!-- Buscador y Filtros -->
+  <div class="filtros">
+    <input 
+      type="text" 
+      [(ngModel)]="terminoBusqueda" 
+      (input)="filtrarLibros()" 
+      placeholder="Buscar por título o autor...">
+    
+    <select [(ngModel)]="generoSeleccionado" (change)="filtrarLibros()">
+      <option value="">Todos los géneros</option>
+      <option *ngFor="let genero of generosDisponibles" [value]="genero">{{ genero }}</option>
+    </select>
+    
+    <button (click)="limpiarFiltros()">Limpiar</button>
+  </div>
+
+  <!-- Estado de Carga -->
+  <div *ngIf="cargando" class="estado">Cargando catálogo...</div>
+
+  <!-- Estado de Error -->
+  <div *ngIf="error" class="estado error">{{ error }}</div>
+
+  <!-- Estado Vacío -->
+  <div *ngIf="!cargando && librosFiltrados.length === 0 && !error" class="estado vacio">
+    No se encontraron libros que coincidan con tu búsqueda.
+  </div>
+
+  <!-- Galería de Libros -->
+  <div class="libros-grid">
+    <div class="libro-card" *ngFor="let libro of librosFiltrados">
+      <!-- Si no hay portada, carga una por defecto -->
+      <img [src]="libro.portadaUrl || 'assets/default-cover.jpg'" alt="Portada de {{ libro.titulo }}">
+      <div class="card-info">
+        <h3>{{ libro.titulo }}</h3>
+        <p class="autor">{{ libro.autorNombre }}</p>
+        <p class="genero">{{ libro.genero }}</p>
+      </div>
+      <button [routerLink]="['/detalles', libro.id]">Ver Detalles</button>
+    </div>
+  </div>
+</div>

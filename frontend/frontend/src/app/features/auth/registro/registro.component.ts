@@ -20,7 +20,8 @@ export class RegistroComponent {
     this.registroForm = this.fb.group({
       nombre: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      rol: ['LECTOR', Validators.required] // Añadido el selector de Rol
     });
   }
 
@@ -29,9 +30,14 @@ export class RegistroComponent {
       this.authService.registrar(this.registroForm.value).subscribe({
         next: (res) => {
           console.log('Registro exitoso. Token:', res.token);
-          // A futuro: guardar el token y redirigir
-          // localStorage.setItem('token', res.token);
-          // this.router.navigate(['/catalogo']);
+          // Guardamos el token para hacer la prueba del Panel de Autor
+          localStorage.setItem('token', res.token);
+          
+          if(this.registroForm.value.rol === 'AUTOR'){
+             this.router.navigate(['/panel-autor']);
+          } else {
+             // Redirigir al inicio o catálogo
+          }
         },
         error: (err) => {
           console.error('Error en registro', err);

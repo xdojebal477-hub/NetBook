@@ -29,9 +29,14 @@ export class LoginComponent {
       this.authService.login(this.loginForm.value).subscribe({
         next: (res) => {
           console.log('Login exitoso. Token:', res.token);
-          // A futuro: guardar el token en localStorage y redirigir
-          // localStorage.setItem('token', res.token);
-          // this.router.navigate(['/catalogo']);
+          //  Guardar el token en localStorage para que el panel de autor pueda usarlo
+          localStorage.setItem('token', res.token);
+
+          if(res.rol === 'AUTOR') {
+            this.router.navigate(['/panel-autor']);
+          } else {
+             // Redirigir al inicio o catálogo
+          }
         },
         error: (err) => {
           console.error('Error en login', err);

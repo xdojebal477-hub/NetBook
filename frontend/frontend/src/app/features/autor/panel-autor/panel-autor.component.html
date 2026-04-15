@@ -1,0 +1,108 @@
+<div class="panel-container">
+  <h2>{{ modoEdicion ? 'Editar Obra' : 'Panel de Autor - Nueva Obra' }}</h2>
+  <p *ngIf="!modoEdicion">Sube tu obra directamente al servidor. Se analizará y, tras su aprobación, aparecerá en el catálogo.</p>
+  <p *ngIf="modoEdicion">Modifica los detalles de tu libro. Recuerda que puedes pasarlo a PUBLICO para que aparezca en el catálogo.</p>
+
+  <form [formGroup]="libroForm" (ngSubmit)="onSubmit()" class="libro-form">
+
+    <!-- Título -->
+    <div class="form-group">
+      <label for="titulo">Título de la Obra *</label>
+      <input id="titulo" type="text" formControlName="titulo" placeholder="Ej: El Nombre del Viento" required />
+    </div>
+
+    <!-- Sinopsis -->
+    <div class="form-group">
+      <label for="sinopsis">Sinopsis (Opcional)</label>
+      <textarea id="sinopsis" formControlName="sinopsis" rows="4" placeholder="Un breve resumen que atrape al lector..."></textarea>
+    </div>
+
+    <!-- Género Literario -->
+    <div class="form-group">
+      <label for="genero">Género (Opcional)</label>
+      <select id="genero" formControlName="genero">
+        <option value="" disabled selected>-- Elige un género --</option>
+        <option value="Ficcion">Ficción</option>
+        <option value="Fantasia">Fantasía</option>
+        <option value="Ciencia Ficcion">Ciencia Ficción</option>
+        <option value="Novela Historica">Novela Histórica</option>
+        <option value="Romance">Romance</option>
+        <option value="Terror">Terror / Thriller</option>
+      </select>
+    </div>
+
+    <!-- Estado (Solo visible en modo edición) -->
+    <div class="form-group" *ngIf="modoEdicion">
+      <label for="estado">Estado de la Obra</label>
+      <select id="estado" formControlName="estado">
+        <option value="BORRADOR">Borrador (Privado)</option>
+        <option value="PUBLICO">Público (Visible en Catálogo)</option>
+      </select>
+    </div>
+
+    <!-- Subida de Archivo (Input File) - Solo cuando se crea uno nuevo o se permite cambiar -->
+    <div class="form-group file-upload-box" *ngIf="!modoEdicion">
+      <label for="archivo">Archivo del Libro (.pdf o .txt) *</label>
+      <input id="archivo" type="file" (change)="onFileSelected($event)" accept="application/pdf, .txt" />
+      <small>Tamaño máximo permitido: 20MB</small>
+    </div>
+
+    <!-- Mensajes Visuales de Éxito o Error -->
+    <div *ngIf="mensajeError" class="alert error">{{ mensajeError }}</div>
+    <div *ngIf="mensajeExito" class="alert success">{{ mensajeExito }}</div>
+
+    <!-- Submit y Cancelar -->
+    <div class="acciones-form">
+      <button *ngIf="!modoEdicion" type="submit" class="btn-subir" [disabled]="libroForm.invalid || !archivoSeleccionado || cargando">
+        <span *ngIf="!cargando">Subir Obra</span>
+        <span *ngIf="cargando">Subiendo...</span>
+      </button>
+
+      <button *ngIf="modoEdicion" type="submit" class="btn-actualizar" [disabled]="libroForm.invalid || cargando">
+        <span *ngIf="!cargando">Guardar Cambios</span>
+        <span *ngIf="cargando">Guardando...</span>
+      </button>
+
+      <button *ngIf="modoEdicion" type="button" class="btn-cancelar" (click)="cancelarEdicion()" [disabled]="cargando">
+        Cancelar Edición
+      </button>
+    </div>
+  </form>
+
+  <hr>
+
+  <!--  Obras Propias -->
+  <div class="mis-obras-section">
+    <h3>Mis Obras Publicadas</h3>
+
+    <div *ngIf="misObras.length === 0" class="empty-state">
+      Aún no has publicado ninguna obra, empieza subiendo tu primera creación literaria.
+    </div>
+
+    <table class="obras-table" *ngIf="misObras.length > 0">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Género</th>
+          <th>Estado</th>
+          <th>Fecha Subida</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let libro of misObras">
+          <td>{{ libro.titulo }}</td>
+          <td>{{ libro.genero }}</td>
+          <td>
+            <span class="badge" [ngClass]="libro.estado.toLowerCase()">{{ libro.estado }}</span>
+          </td>
+          <td>{{ libro.fechaSubida | date:'shortDate' }}</td>
+          <td>
+            <button class="btn-icon btn-edit" (click)="cargarParaEditar(libro)" title="Editar Metadata">✏️ Editar</button>
+            <button class="btn-icon btn-delete" (click)="borrarLibro(libro.id)" title="Eliminar Libro">🗑️ Borrar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

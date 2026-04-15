@@ -4,6 +4,13 @@
 <div><label>Nombre: </label><input type="text" formControlName="nombre"></div>  
 <div><label>Email: </label><input type="email" formControlName="email"></div>  
 <div><label>Password: </label><input type="password" formControlName="password"></div>  
+<div>
+  <label>Quiero registrarme como: </label>
+  <select formControlName="rol">
+    <option value="LECTOR">Lector</option>
+    <option value="AUTOR">Autor</option>
+  </select>
+</div>
 <button type="submit" [disabled]="registroForm.invalid">Registrarse</button>  
 </form>  
 <p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>  

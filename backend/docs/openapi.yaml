@@ -56,7 +56,121 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
 
+  /api/colecciones:
+    get:
+      summary: Obtener colecciones del usuario
+      description: Devuelve todas las colecciones creadas por el usuario autenticado.
+      tags:
+        - Colecciones
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Lista de colecciones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ColeccionResponse'
+    post:
+      summary: Crear una nueva colección
+      description: Crea una colección vacía (pública o privada) para el usuario autenticado.
+      tags:
+        - Colecciones
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ColeccionRequest'
+      responses:
+        '201':
+          description: Colección creada exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColeccionResponse'
+
+  /api/colecciones/{id}/libros/{libroId}:
+    post:
+      summary: Añadir libro a colección
+      description: Añade un libro existente a una de tus colecciones.
+      tags:
+        - Colecciones
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: libroId
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Libro añadido a la colección
+        '404':
+          description: Colección o Libro no encontrado
+
+  /api/libros:
+    post:
+      summary: Subir un nuevo libro (Solo Autores)
+      description: Endpoint que permite a un usuario con rol AUTOR subir un archivo (PDF/TXT) junto a los metadatos de su obra.
+      tags:
+        - Libros
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                titulo:
+                  type: string
+                  description: El título de la obra
+                sinopsis:
+                  type: string
+                  description: Breve resumen de la trama (Opcional)
+                genero:
+                  type: string
+                  description: El género literario de la obra (Opcional)
+                archivo:
+                  type: string
+                  format: binary
+                  description: El archivo del libro en formato .pdf o .txt
+              required:
+                - titulo
+                - archivo
+      responses:
+        '201':
+          description: Libro subido exitosamente al servidor
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LibroResponse'
+        '400':
+          description: Request malformada o archivo inválido
+        '403':
+          description: Permisos insuficientes (Ej. Eres un Lector, no un Autor)
+        '429':
+          description: Rate Limiting activado por spam
+
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     RegistroRequest:
       type: object
@@ -97,6 +211,29 @@ components:
           format: password
           example: "MiPasswordSeguro123"
 
+    LibroResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        titulo:
+          type: string
+        sinopsis:
+          type: string
+        genero:
+          type: string
+        archivoUrl:
+          type: string
+        portadaUrl:
+          type: string
+        estado:
+          type: string
+        autorNombre:
+          type: string
+        fechaSubida:
+          type: string
+          format: date-time
+
     AuthResponse:
       type: object
       properties:
@@ -129,3 +266,36 @@ components:
         fecha:
           type: string
           format: date-time
+    ColeccionRequest:
+      type: object
+      required:
+        - nombre
+      properties:
+        nombre:
+          type: string
+          example: "Favoritos"
+        esPublica:
+          type: boolean
+          example: false
+
+    ColeccionResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        nombre:
+          type: string
+          example: "Favoritos"
+        esPublica:
+          type: boolean
+          example: false
+        fechaCreacion:
+          type: string
+          format: date-time
+        numeroLibros:
+          type: integer
+          example: 0
+        propietarioId:
+          type: integer
+          example: 1

@@ -18,9 +18,11 @@ import com.ieshermanosmachado.netbook.security.JwtService;
 import com.ieshermanosmachado.netbook.security.SecurityUsuario;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
 
     private final UsuarioRepository usuarioRepository;
@@ -29,14 +31,31 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse registrar(RegistroRequest request) {
-        
-        // 1. Validar que el email no exista ya
+        log.info("[AuthService] Iniciando registro para el usuario: {}", request.getEmail());
+        Usuario nuevoUsuario = crearUsuario(request, true);
+
+        //  Generar token y devolver respuesta
+        String jwtToken = generarToken(nuevoUsuario);
+        log.info("[AuthService] Registro completado y token generado para: {}", request.getEmail());
+        return new AuthResponse(jwtToken, nuevoUsuario.getNombre(), nuevoUsuario.getEmail(), nuevoUsuario.getRol());
+    }
+
+    public Usuario registrarDesdeAdmin(RegistroRequest request) {
+        log.info("[AuthService] Administrador registrando nuevo usuario: {}", request.getEmail());
+        return crearUsuario(request, false);
+    }
+
+    private Usuario crearUsuario(RegistroRequest request, boolean permitirRolAdmin) {
+        // . Validar que el email no exista ya
         if (usuarioRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("El email ya está en uso"); // Mejorar con excepciones personalizadas más adelante
+            throw new RuntimeException("El email ya está en uso"); 
         }
 
         // 2. Determinar el rol (Si no lo pasan, es LECTOR por defecto)
         Rol rolAsignado = request.getRol() != null ? request.getRol() : Rol.LECTOR;
+        if (!permitirRolAdmin && rolAsignado == Rol.ADMIN) {
+            throw new RuntimeException("No se puede crear una cuenta ADMIN desde el panel");
+        }
 
         // 3. Crear Entidad Usuario y encriptar contraseña
         Usuario nuevoUsuario = new Usuario(
@@ -47,16 +66,12 @@ public class AuthService {
         );
 
         // 4. Guardar en Base de Datos
-        usuarioRepository.save(nuevoUsuario);
-
-        // 5. Generar token y devolver respuesta
-        String jwtToken = generarToken(nuevoUsuario);
-        return new AuthResponse(jwtToken, nuevoUsuario.getNombre(), nuevoUsuario.getEmail(), nuevoUsuario.getRol());
+        return usuarioRepository.save(nuevoUsuario);
     }
 
     public AuthResponse login(LoginRequest request) {
         // 1. Delega en Spring Security la validación (Compara BD vs Contraseña enviada)
-        // Si falla, lanza excepción automática (BadCredentialsException)
+        // Si falla, lanza excepción automática 
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
+import { tap } from 'rxjs/operators';
 import { AuthResponse, LoginRequest, RegistroRequest } from '../models/auth.models';
 
 @Injectable({
@@ -25,10 +26,42 @@ export class AuthService {
 
   //  Llamada real al backend Sprint 1 que ya tenemos funcionando
   login(request: LoginRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request);
+    console.log(`[AuthService] Haciendo login para: ${request.email}`);
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, request).pipe(
+      tap(
+        res => console.log(`[AuthService] Login SUCCESS para ${res.email}, Rol: ${res.rol}`),
+        err => console.error(`[AuthService] Login ERROR:`, err)
+      )
+    );
   }
 
   registrar(request: RegistroRequest): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/registro`, request);
+    console.log(`[AuthService] Realizando registro de: ${request.email}`);
+    return this.http.post<AuthResponse>(`${this.apiUrl}/registro`, request).pipe(
+      tap(
+        res => console.log(`[AuthService] Registro SUCCESS para ${res.email}`),
+        err => console.error(`[AuthService] Registro ERROR:`, err)
+      )
+    );
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
+  getRole(): string | null {
+    return localStorage.getItem('rol');
+  }
+
+  getNombre(): string | null {
+    return localStorage.getItem('nombre');
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('rol');
+    localStorage.removeItem('nombre');
+    localStorage.removeItem('email');
   }
 }
+

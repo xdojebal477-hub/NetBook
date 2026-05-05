@@ -1,0 +1,81 @@
+<header class="bg-indigo-600 text-white shadow-md sticky top-0 z-50">
+  <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+
+    <!-- Logo -->
+    <a routerLink="/" class="text-2xl font-bold tracking-tight hover:text-indigo-200 transition-colors">
+      NetBook
+    </a>
+
+    <!-- Hamburger menu (Mobile) -->
+    <button (click)="toggleMenu()" class="md:hidden p-2 text-indigo-100 hover:text-white focus:outline-none focus:ring-2 focus:ring-white rounded">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path *ngIf="!isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+        <path *ngIf="isMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Desktop Navigation -->
+    <div class="hidden md:flex items-center space-x-6">
+      <a routerLink="/catalogo" routerLinkActive="text-indigo-200 font-semibold" class="hover:text-indigo-200 transition-colors">Catálogo</a>
+      <a routerLink="/comunidades" routerLinkActive="text-indigo-200 font-semibold" class="hover:text-indigo-200 transition-colors">Comunidades</a>
+
+      <!-- Public Links (No Auth) -->
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/login" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-400 rounded-md transition-colors font-medium border border-indigo-400">Iniciar Sesión</a>
+      </ng-container>
+
+      <!-- Private Links (Auth) -->
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <a routerLink="/colecciones" routerLinkActive="text-indigo-200 font-semibold" class="hover:text-indigo-200 transition-colors">Mis Colecciones</a>
+
+        <!-- Only Author -->
+        <ng-container *ngIf="authService.getRole() === 'AUTOR' || authService.getRole() === 'ADMIN'">
+          <a routerLink="/panel-autor" routerLinkActive="text-indigo-200 font-semibold" class="bg-indigo-800 px-3 py-1 rounded hover:bg-indigo-700 transition-colors">Panel de Autor</a>
+        </ng-container>
+
+        <!-- Only Admin -->
+        <ng-container *ngIf="authService.getRole() === 'ADMIN'">
+          <a routerLink="/panel-admin" routerLinkActive="text-red-200 font-semibold" class="bg-red-600 px-3 py-1 rounded shadow-sm hover:bg-red-500 font-bold tracking-wide transition-colors">Administración</a>
+        </ng-container>
+
+        <!-- Dropdown / Profile area -->
+        <div class="flex items-center space-x-4 border-l border-indigo-400 pl-4 ml-2">
+          <a [routerLink]="authService.getRole() === 'AUTOR' ? '/panel-autor' : '/colecciones'" class="flex items-center space-x-2 hover:text-indigo-200 transition-colors">
+            <div class="w-8 h-8 rounded-full bg-indigo-300 flex items-center justify-center font-bold text-indigo-800">
+              {{ (authService.getNombre() || 'U')[0] | uppercase }}
+            </div>
+            <span class="font-medium text-sm hidden lg:block">{{ authService.getNombre() }}</span>
+          </a>
+          <button (click)="logout()" class="px-3 py-1.5 text-sm text-indigo-600 bg-white hover:bg-gray-100 font-medium rounded transition-colors shadow-sm">
+            Cerrar Sesión
+          </button>
+        </div>
+      </ng-container>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu (Collapsible) -->
+  <div *ngIf="isMenuOpen" class="md:hidden bg-indigo-700 border-t border-indigo-500 absolute w-full left-0 shadow-lg">
+    <div class="px-4 pt-2 pb-4 space-y-1">
+      <a routerLink="/catalogo" class="block px-3 py-2 rounded-md hover:bg-indigo-600 transition-colors" (click)="isMenuOpen = false">Catálogo</a>
+      <a routerLink="/comunidades" class="block px-3 py-2 rounded-md hover:bg-indigo-600 transition-colors" (click)="isMenuOpen = false">Comunidades</a>
+
+      <ng-container *ngIf="!authService.isLoggedIn()">
+        <a routerLink="/login" class="block px-3 py-2 mt-4 bg-indigo-500 hover:bg-indigo-400 font-medium rounded-md transition-colors text-center" (click)="isMenuOpen = false">Iniciar Sesión / Registro</a>
+      </ng-container>
+
+      <ng-container *ngIf="authService.isLoggedIn()">
+        <hr class="border-indigo-500 my-2">
+        <a routerLink="/colecciones" class="block px-3 py-2 rounded-md hover:bg-indigo-600 transition-colors" (click)="isMenuOpen = false">Mis Colecciones</a>
+        <a *ngIf="authService.getRole() === 'AUTOR' || authService.getRole() === 'ADMIN'" routerLink="/panel-autor" class="block px-3 py-2 rounded-md font-semibold text-indigo-200 hover:bg-indigo-600 transition-colors" (click)="isMenuOpen = false">Panel de Autor (Mis Obras)</a>
+        <a *ngIf="authService.getRole() === 'ADMIN'" routerLink="/panel-admin" class="block px-3 py-2 rounded-md font-bold text-red-200 bg-red-600 hover:bg-red-500 transition-colors" (click)="isMenuOpen = false">Panel de Administración</a>
+        
+        <!-- Instead of an empty `/perfil`, the avatar is enough. Or we can just omit it since colecciones is already there -->
+        <button (click)="logout(); isMenuOpen = false" class="block w-full text-left px-3 py-2 mt-4 text-red-100 hover:bg-red-600 hover:text-white rounded-md transition-colors">
+          Cerrar Sesión
+        </button>
+      </ng-container>
+    </div>
+  </div>
+</header>
+

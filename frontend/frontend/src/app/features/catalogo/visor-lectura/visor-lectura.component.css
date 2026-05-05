@@ -1,0 +1,4 @@
+
+.visor-container { display: flex; flex-direction: column; height: 100vh; background: #f3f4f6; }
+.btn-back { padding: 1rem; background: white; border: none; border-bottom: 1px solid #e5e7eb; color: #4f46e5; cursor: pointer; font-weight: bold; text-align: left; }
+.marco-lector { flex-grow: 1; }

@@ -1,0 +1,61 @@
+<div class="form-resena-container">
+  <app-loading-state *ngIf="cargando" message="Cargando tu reseña..." subtitle="Recuperando estado previo del libro." [overlay]="false"></app-loading-state>
+
+  <div *ngIf="!cargando" class="form-resena">
+    <h3>Tu Opinión</h3>
+
+    <!-- Selector de calificación (0.5 a 5.0 estrellas) -->
+    <div class="calificacion-selector">
+      <div class="estrellas">
+        <button
+          *ngFor="let valor of [0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0]"
+          type="button"
+          (click)="seleccionarCalificacion(valor)"
+          [class.selected]="calificacionActual >= valor"
+          class="estrella-btn"
+          title="{{ valor }} estrellas">
+          ★
+        </button>
+      </div>
+      <span class="calificacion-actual" *ngIf="calificacionActual > 0">
+        {{ calificacionActual.toFixed(1) }} / 5.0
+      </span>
+    </div>
+
+    <!-- Área de comentario -->
+    <form [formGroup]="formulario">
+      <div class="comentario-field">
+        <textarea
+          formControlName="comentario"
+          placeholder="Comparte tu opinión sobre este libro (opcional, máximo 1000 caracteres)"
+          class="comentario-input"
+          rows="4"></textarea>
+        <small class="char-count">
+          {{ formulario.get('comentario')?.value?.length || 0 }} / 1000
+        </small>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="botones">
+        <button
+          (click)="guardarResena()"
+          [disabled]="cargando || formulario.invalid"
+          class="btn-guardar">
+          {{ miResena ? 'Actualizar' : 'Publicar' }} Reseña
+        </button>
+
+        <button
+          *ngIf="miResena"
+          (click)="eliminarResena()"
+          [disabled]="cargando"
+          class="btn-eliminar">
+          Eliminar Reseña
+        </button>
+      </div>
+    </form>
+
+    <!-- Mensajes de feedback -->
+    <div *ngIf="exito" class="alert alert-success">{{ exito }}</div>
+    <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+  </div>
+</div>

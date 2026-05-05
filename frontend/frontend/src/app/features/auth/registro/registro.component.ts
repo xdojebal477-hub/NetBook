@@ -1,17 +1,21 @@
 import { Component, inject } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-registro',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule],
   templateUrl: './registro.component.html',
   styleUrl: './registro.component.css'
 })
 export class RegistroComponent {
   registroForm: FormGroup;
+  mensajeExito: string = '';
+  mensajeError: string = '';
+  cargando: boolean = false;
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
   private router = inject(Router);
@@ -27,19 +31,32 @@ export class RegistroComponent {
 
   onSubmit() {
     if (this.registroForm.valid) {
+      this.cargando = true;
+      this.mensajeError = '';
+      this.mensajeExito = '';
+
       this.authService.registrar(this.registroForm.value).subscribe({
         next: (res) => {
-          console.log('Registro exitoso. Token:', res.token);
-          // Guardamos el token para hacer la prueba del Panel de Autor
+          this.cargando = false;
+          this.mensajeExito = '¡Registro completado! Redirigiendo a tu panel...';
+
+          // Guardamos el token y datos para la sesión
           localStorage.setItem('token', res.token);
-          
-          if(this.registroForm.value.rol === 'AUTOR'){
-             this.router.navigate(['/panel-autor']);
-          } else {
-             // Redirigir al inicio o catálogo
-          }
+          localStorage.setItem('rol', res.rol || this.registroForm.value.rol);
+          if (res.nombre) localStorage.setItem('nombre', res.nombre);
+          if (res.email) localStorage.setItem('email', res.email);
+
+          setTimeout(() => {
+            if(this.registroForm.value.rol === 'AUTOR'){
+               this.router.navigate(['/panel-autor']);
+            } else {
+               this.router.navigate(['/catalogo']);
+            }
+          }, 1000);
         },
         error: (err) => {
+          this.cargando = false;
+          this.mensajeError = 'No se pudo completar el registro. El correo ya podría estar en uso.';
           console.error('Error en registro', err);
         }
       });

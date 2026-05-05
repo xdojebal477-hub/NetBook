@@ -1,17 +1,59 @@
-<div class="registro-container">  
-<h2>Registro NetBook</h2>  
-<form [formGroup]="registroForm" (ngSubmit)="onSubmit()">  
-<div><label>Nombre: </label><input type="text" formControlName="nombre"></div>  
-<div><label>Email: </label><input type="email" formControlName="email"></div>  
-<div><label>Password: </label><input type="password" formControlName="password"></div>  
-<div>
-  <label>Quiero registrarme como: </label>
-  <select formControlName="rol">
-    <option value="LECTOR">Lector</option>
-    <option value="AUTOR">Autor</option>
-  </select>
+<div class="min-h-[calc(100vh-200px)] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+  <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-8 border border-gray-100">
+    <div class="text-center mb-8">
+      <h2 class="text-3xl font-extrabold text-gray-900">Crea tu cuenta</h2>
+      <p class="mt-2 text-sm text-gray-600">Únete a la nueva era de lectura digital</p>
+    </div>
+    <form class="space-y-6" [formGroup]="registroForm" (ngSubmit)="onSubmit()">
+      <div>
+        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre (o alias)</label>
+        <div class="mt-1">
+          <input id="nombre" type="text" formControlName="nombre" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ej: Daniel Ojeda">
+        </div>
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-700">Correo Electrónico</label>
+        <div class="mt-1">
+          <input id="email" type="email" formControlName="email" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="tu@email.com">
+        </div>
+      </div>
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-700">Contraseña</label>
+        <div class="mt-1">
+          <input id="password" type="password" formControlName="password" class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="••••••••">
+        </div>
+      </div>
+      <div>
+        <label for="rol" class="block text-sm font-medium text-gray-700">Tipo de cuenta</label>
+        <div class="mt-1">
+          <select id="rol" formControlName="rol" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md shadow-sm">
+            <option value="LECTOR">Quiero leer y descubrir (Lector)</option>
+            <option value="AUTOR">Quiero publicar mis obras (Autor)</option>
+          </select>
+        </div>
+      </div>
+      <div>
+        <button type="submit" [disabled]="registroForm.invalid || cargando" class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-400 disabled:cursor-not-allowed transition-colors">
+          <span *ngIf="!cargando">Registrarse</span>
+          <span *ngIf="cargando">Creando cuenta...</span>
+        </button>
+      </div>
+
+      <!-- Alertas de estado -->
+      <div *ngIf="mensajeError" class="p-3 bg-red-50 text-red-700 text-sm font-medium rounded-md border border-red-200 mt-4 text-center">
+        {{ mensajeError }}
+      </div>
+      <div *ngIf="mensajeExito" class="p-3 bg-green-50 text-green-700 text-sm font-medium rounded-md border border-green-200 mt-4 text-center flex justify-center items-center gap-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+        {{ mensajeExito }}
+      </div>
+
+    </form>
+    <div class="mt-6 text-center">
+      <p class="text-sm text-gray-600">
+        ¿Ya tienes una cuenta?
+        <a routerLink="/login" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">Inicia sesión</a>
+      </p>
+    </div>
+  </div>
 </div>
-<button type="submit" [disabled]="registroForm.invalid">Registrarse</button>  
-</form>  
-<p>¿Ya tienes cuenta? <a routerLink="/login">Inicia sesión</a></p>  
-</div> 

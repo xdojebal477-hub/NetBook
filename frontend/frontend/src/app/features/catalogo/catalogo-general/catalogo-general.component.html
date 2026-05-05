@@ -1,24 +1,23 @@
 <div class="catalogo-container">
   <h1>Descubre Grandes Obras</h1>
-  
+
+  <app-loading-state *ngIf="cargando" message="Cargando catálogo..." subtitle="Buscando libros y preparando la galería." [overlay]="true"></app-loading-state>
+
   <!-- Buscador y Filtros -->
   <div class="filtros">
-    <input 
-      type="text" 
-      [(ngModel)]="terminoBusqueda" 
-      (input)="filtrarLibros()" 
+    <input
+      type="text"
+      [(ngModel)]="terminoBusqueda"
+      (input)="filtrarLibros()"
       placeholder="Buscar por título o autor...">
-    
+
     <select [(ngModel)]="generoSeleccionado" (change)="filtrarLibros()">
       <option value="">Todos los géneros</option>
       <option *ngFor="let genero of generosDisponibles" [value]="genero">{{ genero }}</option>
     </select>
-    
+
     <button (click)="limpiarFiltros()">Limpiar</button>
   </div>
-
-  <!-- Estado de Carga -->
-  <div *ngIf="cargando" class="estado">Cargando catálogo...</div>
 
   <!-- Estado de Error -->
   <div *ngIf="error" class="estado error">{{ error }}</div>
@@ -30,15 +29,31 @@
 
   <!-- Galería de Libros -->
   <div class="libros-grid">
-    <div class="libro-card" *ngFor="let libro of librosFiltrados">
-      <!-- Si no hay portada, carga una por defecto -->
-      <img [src]="libro.portadaUrl || 'assets/default-cover.jpg'" alt="Portada de {{ libro.titulo }}">
-      <div class="card-info">
-        <h3>{{ libro.titulo }}</h3>
-        <p class="autor">{{ libro.autorNombre }}</p>
-        <p class="genero">{{ libro.genero }}</p>
+    <div class="col-span-1 border border-gray-200 rounded-lg bg-white overflow-hidden shadow-sm hover:shadow-md transition-shadow relative flex flex-col" *ngFor="let libro of librosFiltrados">
+
+      <!-- Contenedor Portada -->
+      <div class="w-full aspect-[2/3] bg-gray-200 relative flex items-center justify-center border-b border-gray-100">
+        <img *ngIf="libro.portadaUrl" [src]="libro.portadaUrl" alt="Portada de {{ libro.titulo }}" class="w-full h-full object-cover">
+
+        <!-- Placeholder sin portada -->
+        <div *ngIf="!libro.portadaUrl" class="text-center p-4 flex flex-col items-center opacity-70">
+          <svg class="w-12 h-12 text-gray-500 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+        </div>
+
+        <!-- Badge -->
+        <span class="absolute top-2 right-2 px-2 py-1 bg-indigo-500/90 text-white text-xs font-bold rounded-md backdrop-blur-sm shadow-sm">{{ libro.genero || 'Sin género' }}</span>
       </div>
-      <button [routerLink]="['/detalles', libro.id]">Ver Detalles</button>
+
+      <!-- Contenido de info -->
+      <div class="p-4 flex flex-col flex-grow text-center">
+        <h3 class="font-bold text-gray-900 line-clamp-2 leading-tight mb-1" [title]="libro.titulo">{{ libro.titulo }}</h3>
+        <p class="text-sm font-medium text-gray-500 mb-4">{{ libro.autorNombre }}</p>
+
+        <button [routerLink]="['/libro', libro.id]" class="mt-auto w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-sm rounded-md transition-colors shadow-sm cursor-pointer">
+          Ver Detalles
+        </button>
+      </div>
+
     </div>
   </div>
 </div>

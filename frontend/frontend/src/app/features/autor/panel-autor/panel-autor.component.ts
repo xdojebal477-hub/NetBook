@@ -2,11 +2,13 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LibroService, LibroResponse, LibroUpdateRequest } from '../../../core/services/libro.service';
+import { LoadingStateComponent } from '../../../core/components/loading-state/loading-state.component';
+import { completeAfterMinimumDelay } from '../../../core/utils/loading-delay';
 
 @Component({
   selector: 'app-panel-autor',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, LoadingStateComponent],
   templateUrl: './panel-autor.component.html',
   styleUrl: './panel-autor.component.css'
 })
@@ -17,6 +19,7 @@ export class PanelAutorComponent implements OnInit {
 
   public libroForm: FormGroup;
   public archivoSeleccionado: File | null = null;
+  public portadaSeleccionada: File | null = null;
   public misObras: LibroResponse[] = [];
   public modoEdicion: boolean = false;
   public idLibroEditando: number | null = null;
@@ -25,12 +28,15 @@ export class PanelAutorComponent implements OnInit {
   public mensajeError: string = '';
   public cargando: boolean = false;
 
+  private readonly loadingDelayMs = 700;
+
   constructor() {
     // Definición de los campos que recibe el back
     this.libroForm = this.fb.group({
       titulo: ['', [Validators.required, Validators.maxLength(200)]],
       sinopsis: [''],
       genero: [''],
+      portadaUrl: [''], // Lo mantenemos para mostrar que ya existe una si estamos en edicion, pero en frontend será ignarado al submitir, enviaremos la File
       estado: ['BORRADOR'] // para gestionar los estados de las obras de un autor
     });
   }
@@ -41,12 +47,34 @@ export class PanelAutorComponent implements OnInit {
 
   // Cargar libros del autor
   cargarMisObras(): void {
+    this.cargando = true;
+    const startedAt = Date.now();
     this.libroService.obtenerMisObras().subscribe({
       next: (data) => {
-        this.misObras = data;
+        completeAfterMinimumDelay(startedAt, this.loadingDelayMs, () => {
+          this.misObras = data;
+          this.cargando = false;
+        });
       },
-      error: (err) => console.error('Error al cargar obras:', err)
+      error: (err) => completeAfterMinimumDelay(startedAt, this.loadingDelayMs, () => {
+        console.error('Error al cargar obras:', err);
+        this.cargando = false;
+      })
     });
+  }
+
+  // Detecta el momento en el que el autor selecciona el archivo de la portada
+  onPortadaSelected(event: any): void {
+    const file: File = event.target.files[0];
+    if (file) {
+      if (file.type.startsWith('image/')) {
+        this.portadaSeleccionada = file;
+        this.mensajeError = '';
+      } else {
+        this.portadaSeleccionada = null;
+        this.mensajeError = 'Formato de imagen inválido. Solo se admiten archivos PNG, JPG o WEBP.';
+      }
+    }
   }
 
   // Detecta el momento en el que el autor selecciona el archivo s
@@ -75,6 +103,7 @@ export class PanelAutorComponent implements OnInit {
       titulo: libro.titulo,
       sinopsis: libro.sinopsis,
       genero: libro.genero,
+      portadaUrl: libro.portadaUrl,
       estado: libro.estado
     });
 
@@ -88,6 +117,7 @@ export class PanelAutorComponent implements OnInit {
     this.idLibroEditando = null;
     this.libroForm.reset({ estado: 'BORRADOR' });
     this.archivoSeleccionado = null;
+    this.portadaSeleccionada = null;
     this.mensajeExito = '';
     this.mensajeError = '';
   }
@@ -123,7 +153,7 @@ export class PanelAutorComponent implements OnInit {
       };
 
       this.cargando = true;
-      this.libroService.actualizarLibro(this.idLibroEditando, request).subscribe({
+      this.libroService.actualizarLibro(this.idLibroEditando, request, this.portadaSeleccionada).subscribe({
         next: (response) => {
           this.cargando = false;
           this.mensajeExito = `Libro '${response.titulo}' actualizado con éxito.`;
@@ -154,7 +184,7 @@ export class PanelAutorComponent implements OnInit {
     const genero = this.libroForm.get('genero')?.value;
 
     // Llamada al backend
-    this.libroService.subirLibro(titulo, sinopsis, genero, this.archivoSeleccionado)
+    this.libroService.subirLibro(titulo, sinopsis, genero, this.portadaSeleccionada, this.archivoSeleccionado)
       .subscribe({
         next: (response: LibroResponse) => {
           this.cargando = false;

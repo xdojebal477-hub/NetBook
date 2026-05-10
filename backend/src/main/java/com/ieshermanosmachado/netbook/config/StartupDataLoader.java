@@ -49,7 +49,7 @@ public class StartupDataLoader implements ApplicationRunner {
             log.info("[StartupDataLoader] Admin user created: {}", adminEmail);
         } catch (Exception ex) {
             log.error("[StartupDataLoader] Error ensuring admin user exists", ex);
-            // don't rethrow to avoid failing startup; just log
+            
         }
     }
 }

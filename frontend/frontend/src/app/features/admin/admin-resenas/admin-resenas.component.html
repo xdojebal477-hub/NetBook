@@ -1,0 +1,89 @@
+<div class="admin-resenas-container">
+  <!-- Loading State -->
+  <app-loading-state *ngIf="cargando" message="Cargando reseñas..." subtitle="Recuperando el listado completo de moderación." [overlay]="false"></app-loading-state>
+
+  <!-- Error Alert -->
+  <div *ngIf="error" class="alert alert-error">
+    {{ error }}
+  </div>
+
+  <!-- Success Alert -->
+  <div *ngIf="mensajeExito" class="alert alert-success">
+    {{ mensajeExito }}
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filter-group">
+      <label for="filtroLibro">Filtrar por ID de Libro:</label>
+      <input
+        id="filtroLibro"
+        type="text"
+        [(ngModel)]="filtroLibroId"
+        (ngModelChange)="onFiltroChange()"
+        placeholder="ID del libro (opcional)"
+        class="filter-input"
+      />
+    </div>
+    <div class="filter-group">
+      <label for="filtroUsuario">Filtrar por ID de Usuario:</label>
+      <input
+        id="filtroUsuario"
+        type="text"
+        [(ngModel)]="filtroUsuarioId"
+        (ngModelChange)="onFiltroChange()"
+        placeholder="ID del usuario (opcional)"
+        class="filter-input"
+      />
+    </div>
+  </div>
+
+  <!-- Reviews Count -->
+  <div class="reviews-count">
+    {{ resenasFiltradas.length }} reseña{{ resenasFiltradas.length !== 1 ? 's' : '' }}
+  </div>
+
+  <!-- No Reviews Message -->
+  <div *ngIf="!cargando && resenasFiltradas.length === 0" class="no-reviews">
+    <p>No hay reseñas para mostrar</p>
+  </div>
+
+  <!-- Reviews List -->
+  <div *ngIf="!cargando && resenasFiltradas.length > 0" class="reviews-list">
+    <div *ngFor="let resena of resenasFiltradas" class="review-card">
+      <div class="review-header">
+        <div class="review-info">
+          <h4 class="review-user">{{ resena.usuarioNombre }}</h4>
+          <span class="review-date">{{ formatearFecha(resena.fechaCreacion) }}</span>
+        </div>
+        <div class="review-rating">
+          <span class="rating-stars">{{ obtenerEstrellas(resena.puntuacion) }}</span>
+          <span class="rating-value">{{ resena.puntuacion.toFixed(1) }}/5</span>
+        </div>
+      </div>
+
+      <div class="review-meta">
+        <span class="meta-badge">Libro ID: {{ resena.libroId }}</span>
+        <span class="meta-badge">Usuario ID: {{ resena.usuarioId }}</span>
+        <span *ngIf="resena.sentimientoIA" class="sentiment-badge" [ngClass]="'sentiment-' + resena.sentimientoIA.toLowerCase()">
+          {{ resena.sentimientoIA }}
+        </span>
+      </div>
+
+      <div *ngIf="resena.comentario" class="review-comment">
+        {{ resena.comentario }}
+      </div>
+
+      <div class="review-actions">
+        <button
+          (click)="eliminarResena(resena.id)"
+          [disabled]="eliminando && resenaEliminando === resena.id"
+          class="btn-delete"
+        >
+          <span *ngIf="eliminando && resenaEliminando === resena.id">Eliminando...</span>
+          <span *ngIf="!(eliminando && resenaEliminando === resena.id)">Eliminar Reseña</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

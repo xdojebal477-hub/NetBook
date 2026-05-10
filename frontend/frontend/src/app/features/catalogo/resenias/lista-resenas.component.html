@@ -1,0 +1,64 @@
+<div class="lista-resenas-container">
+  <app-loading-state *ngIf="cargando" message="Cargando reseñas..." subtitle="Preparando el listado de opiniones." [overlay]="false"></app-loading-state>
+
+  <div *ngIf="!cargando" class="resenas-content">
+    <!-- Resumen de calificación -->
+    <div class="resenas-summary">
+      <div class="rating-section">
+        <div class="rating-average">
+          <span class="rating-number">{{ ratingPromedio.toFixed(1) }}</span>
+          <span class="rating-max">/ 5.0</span>
+        </div>
+        <div class="rating-stars">
+          <span *ngFor="let estrella of obtenerEstrellas(ratingPromedio)" class="star" [ngClass]="estrella">★</span>
+        </div>
+        <p class="rating-count">{{ countResenas }} reseña{{ countResenas !== 1 ? 's' : '' }}</p>
+      </div>
+
+      <!-- Desglose de calificaciones (opcional) -->
+      <div class="rating-breakdown" *ngIf="countResenas > 0">
+        <h4>Desglose de calificaciones</h4>
+        <div class="breakdown-items">
+          <div class="breakdown-item" *ngFor="let stars of [5, 4, 3, 2, 1]">
+            <span class="stars-label">{{ stars }}★</span>
+            <div class="bar-container">
+              <div class="bar" [ngStyle]="{'width': '0%'}"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista de reseñas -->
+    <div class="resenas-list">
+      <h3 class="resenas-title">Reseñas de Lectores</h3>
+
+      <div *ngIf="resenas.length === 0" class="no-resenas">
+        <p>No hay reseñas aún. ¡Sé el primero en reseñar este libro!</p>
+      </div>
+
+      <div *ngFor="let resena of resenas" class="resena-card">
+        <div class="resena-header">
+          <div class="resena-user-info">
+            <a [routerLink]="['/usuario', resena.usuarioId]" class="usuario-nombre inline-block font-bold text-indigo-600 hover:text-indigo-800 hover:underline transition-colors">{{ resena.usuarioNombre }}</a>
+            <span class="resena-fecha">{{ formatearFecha(resena.fechaCreacion) }}</span>
+          </div>
+          <div class="resena-rating">
+            <span *ngFor="let estrella of obtenerEstrellas(resena.puntuacion)" class="star" [ngClass]="estrella">★</span>
+            <span class="rating-value">{{ resena.puntuacion }}</span>
+          </div>
+        </div>
+
+        <div *ngIf="resena.comentario" class="resena-comentario">
+          {{ resena.comentario }}
+        </div>
+
+        <div *ngIf="resena.sentimientoIA" class="sentimiento-badge" [ngClass]="'sentimiento-' + resena.sentimientoIA.toLowerCase()">
+          {{ resena.sentimientoIA }}
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="error" class="alert alert-error">{{ error }}</div>
+  </div>
+</div>

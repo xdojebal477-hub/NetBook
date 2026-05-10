@@ -1,0 +1,133 @@
+<div class="container mx-auto p-4 flex flex-col md:flex-row gap-6">
+
+  <!-- Sidebar: Filtros y Botón Creador -->
+  <aside class="w-full md:w-1/4 flex flex-col gap-4">
+    <div class="bg-white p-4 shadow rounded-lg">
+      <button
+        (click)="toggleCrear()"
+        class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded hover:bg-blue-700 transition">
+        {{ creando ? 'Cancelar' : '+ Nueva Comunidad' }}
+      </button>
+    </div>
+
+    <!-- Formulario Creación -->
+    <div *ngIf="creando" class="bg-gray-50 p-4 shadow rounded-lg border border-blue-200">
+      <h3 class="text-lg font-bold mb-2">Crear Comunidad</h3>
+      <input type="text" [(ngModel)]="nuevaComunidad.nombre" placeholder="Nombre de la sala"
+             class="w-full p-2 border rounded mb-2" />
+      <textarea [(ngModel)]="nuevaComunidad.descripcion" placeholder="Descripción breve"
+                class="w-full p-2 border rounded mb-2"></textarea>
+
+      <p class="text-sm font-semibold mb-1">Géneros:</p>
+      <div class="flex flex-wrap gap-2 mb-4">
+        <span *ngFor="let g of generosList"
+              (click)="toggleGenero(g)"
+              [class.bg-blue-600]="nuevaComunidad.generos.includes(g)"
+              [class.text-white]="nuevaComunidad.generos.includes(g)"
+              [class.bg-gray-200]="!nuevaComunidad.generos.includes(g)"
+              class="px-2 py-1 text-xs rounded cursor-pointer select-none">
+          {{ g }}
+        </span>
+      </div>
+
+      <button (click)="guardarNuevaComunidad()"
+              class="w-full bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600">
+        Guardar Sala
+      </button>
+    </div>
+
+    <div class="bg-white p-4 shadow rounded-lg">
+      <h3 class="text-lg font-bold mb-4">Filtrar por Género</h3>
+      <div class="flex flex-wrap gap-2">
+        <span *ngFor="let g of generosList"
+              (click)="filtrarPorGenero(g)"
+              [class.bg-purple-600]="generoFiltro === g"
+              [class.text-white]="generoFiltro === g"
+              [class.bg-gray-100]="generoFiltro !== g"
+              class="px-3 py-1 rounded-full cursor-pointer hover:bg-purple-200 transition text-sm">
+          {{ g }}
+        </span>
+      </div>
+      <button *ngIf="generoFiltro" (click)="filtrarPorGenero('')" class="mt-4 text-sm text-red-500 underline">
+        Quitar Filtro
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main: Catálogo de Salas -->
+  <main class="w-full md:w-3/4">
+    <h2 class="text-2xl font-extrabold mb-6">Explorar Comunidades</h2>
+
+    <section class="mb-8">
+      <div class="mb-4 flex items-center justify-between">
+        <h3 class="text-lg font-bold">Tus comunidades</h3>
+        <span class="text-sm text-gray-500">{{ comunidadesPropias.length }}</span>
+      </div>
+      <div *ngIf="comunidadesPropias.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let com of comunidadesPropias" class="bg-white rounded-lg shadow p-5 flex flex-col justify-between border border-emerald-200">
+          <div>
+            <h3 class="text-xl font-bold mb-2">{{ com.nombre }}</h3>
+            <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ com.descripcion }}</p>
+            <div class="flex flex-wrap gap-1 mb-4">
+              <span *ngFor="let g of com.generos" class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                {{ g }}
+              </span>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-2 border-t pt-4">
+            <span class="text-xs text-gray-500 flex items-center">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+              {{ com.numeroMiembros }}
+            </span>
+            <button (click)="unirseYEntrar(com)" class="bg-emerald-600 text-white px-4 py-2 rounded text-sm hover:bg-emerald-700 transition">
+              Ya perteneces
+            </button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="comunidadesPropias.length === 0" class="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-500">
+        Aún no perteneces a ninguna comunidad en esta página.
+      </div>
+    </section>
+
+    <section>
+      <div class="mb-4 flex items-center justify-between">
+        <h3 class="text-lg font-bold">Comunidades disponibles</h3>
+        <span class="text-sm text-gray-500">{{ comunidadesDisponibles.length }}</span>
+      </div>
+      <div *ngIf="comunidadesDisponibles.length > 0" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div *ngFor="let com of comunidadesDisponibles" class="bg-white rounded-lg shadow p-5 flex flex-col justify-between">
+          <div>
+            <h3 class="text-xl font-bold mb-2">{{ com.nombre }}</h3>
+            <p class="text-gray-600 text-sm mb-4 line-clamp-3">{{ com.descripcion }}</p>
+            <div class="flex flex-wrap gap-1 mb-4">
+              <span *ngFor="let g of com.generos" class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">
+                {{ g }}
+              </span>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-2 border-t pt-4">
+            <span class="text-xs text-gray-500 flex items-center">
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+              {{ com.numeroMiembros }}
+            </span>
+            <button (click)="unirseYEntrar(com)" class="bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700 transition">
+              Entrar / Unirse
+            </button>
+          </div>
+        </div>
+      </div>
+      <div *ngIf="comunidadesDisponibles.length === 0" class="rounded-lg border border-dashed border-gray-300 bg-gray-50 p-4 text-sm text-gray-500">
+        No hay comunidades disponibles con este filtro.
+      </div>
+    </section>
+
+    <!-- Paginación -->
+    <div class="flex justify-center mt-8 gap-2" *ngIf="totalPages > 1">
+      <button [disabled]="page === 0" (click)="cambiarPagina(page - 1)" class="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">Anterior</button>
+      <span class="px-4 py-2">Página {{ page + 1 }} de {{ totalPages }}</span>
+      <button [disabled]="page === totalPages - 1" (click)="cambiarPagina(page + 1)" class="px-4 py-2 bg-gray-200 rounded disabled:opacity-50">Siguiente</button>
+    </div>
+  </main>
+
+</div>

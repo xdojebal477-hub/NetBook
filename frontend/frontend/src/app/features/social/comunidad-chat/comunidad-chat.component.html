@@ -1,0 +1,64 @@
+<div class="container mx-auto p-4 flex flex-col md:flex-row gap-6 h-[85vh]">
+
+  <!-- Columna 1: Miembros (25%) -->
+  <aside class="w-full md:w-1/4 bg-white rounded-lg shadow flex flex-col overflow-hidden">
+    <div class="bg-purple-600 text-white p-4 flex items-center justify-between">
+      <h3 class="font-bold text-lg">Miembros</h3>
+      <button (click)="volver()" class="text-xs underline hover:text-gray-200">&larr; Volver</button>
+    </div>
+
+    <div class="flex-1 overflow-y-auto p-4">
+      <ul class="space-y-4">
+        <li *ngFor="let m of miembros" class="flex items-center gap-3">
+          <img [src]="m.avatarUrl || 'assets/default-avatar.png'" alt="Avatar" class="w-10 h-10 rounded-full border bg-gray-100 object-cover" />
+          <div class="flex flex-col">
+            <span class="font-semibold text-sm cursor-pointer hover:text-purple-600 hover:underline transition" (click)="irAlPerfil(m.id)">{{ m.nombre }}</span>
+            <span class="text-xs text-gray-500">Miembro</span>
+          </div>
+        </li>
+        <li *ngIf="miembros.length === 0" class="text-gray-500 text-sm text-center mt-4">
+          Nadie más está aquí.
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <!-- Columna 2: Chat (75%) -->
+  <main class="w-full md:w-3/4 bg-white rounded-lg shadow flex flex-col overflow-hidden border border-gray-200">
+    <!-- Cabecera de la sala -->
+    <header class="bg-gray-50 p-4 border-b border-gray-200">
+      <h2 class="text-xl font-bold text-gray-800">{{ comunidad?.nombre || 'Cargando sala...' }}</h2>
+      <p class="text-xs text-gray-500 line-clamp-1">{{ comunidad?.descripcion }}</p>
+    </header>
+
+    <!-- Historial de mensajes -->
+    <div #scrollMe class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-100">
+
+      <div *ngFor="let msj of mensajes" class="flex flex-col">
+        <!-- Simulación de quien lo manda (podrías comparar msj.autorNombre con tu usuario en authService para alinear izquierda o derecha) -->
+        <div
+          class="flex flex-col max-w-[80%] rounded-lg p-3 border border-gray-200 shadow-sm"
+          [ngClass]="msj.autorNombre === miNombre ? 'bg-purple-100 self-end border-purple-200' : 'bg-white self-start'">
+          <div class="flex items-center gap-2 mb-1">
+            <img [src]="msj.autorAvatarUrl || 'assets/default-avatar.png'" class="w-6 h-6 rounded-full" />
+            <span class="font-bold text-xs" [ngClass]="msj.autorNombre === miNombre ? 'text-purple-900' : 'text-purple-700'">
+              {{ msj.autorNombre === miNombre ? 'Tú' : msj.autorNombre }}
+            </span>
+            <span class="text-[10px] text-gray-400">{{ msj.fechaPublicacion | date:'shortTime' }}</span>
+          </div>
+          <p class="text-sm text-gray-800 break-words">{{ msj.contenido }}</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Caja de entrada -->
+    <footer class="p-3 bg-white border-t flex gap-2">
+      <input type="text" [(ngModel)]="nuevoMensajeTexto" (keyup.enter)="enviarMensaje()" placeholder="Escribe un mensaje..." class="flex-1 border rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-purple-500" />
+      <button (click)="enviarMensaje()" [disabled]="!nuevoMensajeTexto.trim()" class="bg-purple-600 text-white rounded-full p-2 px-4 hover:bg-purple-700 transition disabled:opacity-50">
+        Enviar
+      </button>
+    </footer>
+
+  </main>
+</div>

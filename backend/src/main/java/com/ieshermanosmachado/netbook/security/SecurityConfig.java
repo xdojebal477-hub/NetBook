@@ -52,13 +52,13 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @org.springframework.beans.factory.annotation.Value("${FRONTEND_URL:http://localhost:4200}")
+    @org.springframework.beans.factory.annotation.Value("${FRONTEND_URL:https://net-book-rust.vercel.app}")
     private String frontendUrl;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(frontendUrl, "http://localhost:4200")); // Permitimos frontend prod y local
+        configuration.setAllowedOrigins(List.of(frontendUrl, "http://localhost:4200", "https://net-book-rust.vercel.app")); // Permitimos frontend prod y local
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type", "Accept"));
         

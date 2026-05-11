@@ -45,8 +45,8 @@ public class LibroService {
         String portadaUrlGuardada = null;
         if (portada != null && !portada.isEmpty()) {
             portadaUrlGuardada = fileStorageService.guardarArchivo(portada);
-            // El front necesita una url real para el IMG src, por tanto usaremos la misma ruta pero cambiamos el endpoint para q sirva la imagen
-            portadaUrlGuardada = "http://localhost:8081/api/libros/archivos/" + portadaUrlGuardada;
+            // El front necesita un src para IMG. Usamos la ruta relativa para que funcione en cualquier entorno (local o prod)
+            portadaUrlGuardada = "/api/libros/archivos/" + portadaUrlGuardada;
         }
 
         // persistencia en la db
@@ -109,7 +109,7 @@ public class LibroService {
         if (estado != null) libro.setEstado(estado);
         if (portada != null && !portada.isEmpty()) {
             String portadaFile = fileStorageService.guardarArchivo(portada);
-            libro.setPortadaUrl("http://localhost:8081/api/libros/archivos/" + portadaFile);
+            libro.setPortadaUrl("/api/libros/archivos/" + portadaFile);
         }
 
         return libroRepository.save(libro);

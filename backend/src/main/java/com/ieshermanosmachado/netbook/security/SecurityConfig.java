@@ -36,6 +36,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 // Dejamos pasar todo lo que vaya a la ruta de registro/login (Auth) 
                 .requestMatchers("/api/auth/**").permitAll()
+                .requestMatchers("/actuator/health").permitAll()
                 //  GET de libros, usuarios y su detalle es público (Catálogo y Perfiles abiertos)
                 .requestMatchers(HttpMethod.GET, "/api/libros", "/api/libros/{id}", "/api/libros/archivos/**", "/api/libros/{id}/leer", "/api/usuarios/**").permitAll()
                 // Cualquier otra ruta requiere estar autenticado (haber pasado el filtro JWT con éxito)

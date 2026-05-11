@@ -21,7 +21,7 @@ export interface ColeccionRequest {
   providedIn: 'root'
 })
 export class ColeccionService {
-  private apiUrl = 'http://localhost:8081/api/colecciones';
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/colecciones';
 
   constructor(private http: HttpClient) { }
 

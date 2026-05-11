@@ -51,7 +51,7 @@ export interface CrearComunidadAdminRequest {
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = 'http://localhost:8081/api/admin';
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/admin';
 
   constructor(private http: HttpClient) {}
 
@@ -106,7 +106,7 @@ export class AdminService {
   }
 
   getMiembrosComunidad(id: number): Observable<UsuarioAdminResponse[]> {
-    return this.http.get<{ content: UsuarioAdminResponse[] }>(`http://localhost:8081/api/comunidades/${id}/miembros`, { headers: this.getAuthHeaders() })
+    return this.http.get<{ content: UsuarioAdminResponse[] }>(`https://netbook-backend-production.up.railway.app/api/comunidades/${id}/miembros`, { headers: this.getAuthHeaders() })
       .pipe(map(response => response.content));
   }
 

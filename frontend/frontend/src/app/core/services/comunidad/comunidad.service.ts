@@ -14,7 +14,7 @@ import {
   providedIn: 'root'
 })
 export class ComunidadService {
-  private apiUrl = 'http://localhost:8081/api/comunidades';
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/comunidades';
 
   constructor(private http: HttpClient, private zone: NgZone) { }
 

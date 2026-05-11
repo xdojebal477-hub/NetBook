@@ -25,7 +25,7 @@ export interface CreateResenaRequest {
 })
 export class ResenaService {
 
-  private apiUrl = 'http://localhost:8081/api/resenas';
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/resenas';
 
   constructor(private http: HttpClient) { }
 
@@ -157,7 +157,7 @@ export class ResenaService {
   obtenerTodasResenas(): Observable<ResenaResponse[]> {
     console.log(`[ResenaService] ADMIN obtenerTodasResenas()`);
     return this.http.get<ResenaResponse[]>(
-      'http://localhost:8081/api/admin/resenas',
+      'https://netbook-backend-production.up.railway.app/api/admin/resenas',
       this.getAuthHeaders()
     ).pipe(
       tap(
@@ -173,7 +173,7 @@ export class ResenaService {
   eliminarResenaAdmin(resenaId: number): Observable<void> {
     console.log(`[ResenaService] ADMIN eliminarResenaAdmin(resenaId=${resenaId})`);
     return this.http.delete<void>(
-      `http://localhost:8081/api/admin/resenas/${resenaId}`,
+      `https://netbook-backend-production.up.railway.app/api/admin/resenas/${resenaId}`,
       this.getAuthHeaders()
     ).pipe(
       tap(

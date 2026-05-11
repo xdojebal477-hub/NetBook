@@ -29,7 +29,7 @@ export interface LibroUpdateRequest {
 export class LibroService {
 
   // Apunta a nuestro backend de Spring Boot (Puerto 8081 que configuramos)
-  private apiUrl = 'http://localhost:8081/api/libros';
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/libros';
 
   constructor(private http: HttpClient) { }
 

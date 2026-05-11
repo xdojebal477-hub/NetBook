@@ -9,7 +9,7 @@ import { AuthResponse, LoginRequest, RegistroRequest } from '../models/auth.mode
 })
 export class AuthService {
 
-  private apiUrl = 'http://localhost:8081/api/auth';
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/auth';
 
   constructor(private http: HttpClient) { }
 

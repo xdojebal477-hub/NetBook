@@ -41,7 +41,7 @@ export interface UsuarioPerfil {
   providedIn: 'root'
 })
 export class UsuarioService {
-  private apiUrl = 'http://localhost:8081/api/usuarios';
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/usuarios';
 
   constructor(private http: HttpClient) { }
 

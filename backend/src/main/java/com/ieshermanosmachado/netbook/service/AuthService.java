@@ -32,7 +32,7 @@ public class AuthService {
 
     public AuthResponse registrar(RegistroRequest request) {
         log.info("[AuthService] Iniciando registro para el usuario: {}", request.getEmail());
-        Usuario nuevoUsuario = crearUsuario(request, false); // No permitir crear admin por registro público
+        Usuario nuevoUsuario = crearUsuario(request, false);
 
         //  Generar token y devolver respuesta
         String jwtToken = generarToken(nuevoUsuario);
@@ -41,8 +41,8 @@ public class AuthService {
     }
 
     public Usuario registrarDesdeAdmin(RegistroRequest request) {
-        log.info("[AuthService] Creación interna/admin de nuevo usuario: {}", request.getEmail());
-        return crearUsuario(request, true); // Permitir crear admin internamente
+        log.info("[AuthService] Administrador registrando nuevo usuario: {}", request.getEmail());
+        return crearUsuario(request, true);
     }
 
     private Usuario crearUsuario(RegistroRequest request, boolean permitirRolAdmin) {

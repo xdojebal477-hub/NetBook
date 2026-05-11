@@ -66,6 +66,15 @@
 
       <ng-container *ngIf="authService.isLoggedIn()">
         <hr class="border-indigo-500 my-2">
+        
+        <!-- Nombre del usuario con botón a su perfil en móvil -->
+        <button (click)="irAlPerfil(); isMenuOpen = false" class="flex w-full items-center space-x-3 px-3 py-2 rounded-md hover:bg-indigo-600 transition-colors text-left">
+          <div class="w-8 h-8 rounded-full bg-indigo-300 flex items-center justify-center font-bold text-indigo-800 flex-shrink-0 border-2 border-indigo-400">
+            {{ (authService.getNombre() || 'U')[0] | uppercase }}
+          </div>
+          <span class="font-medium">{{ authService.getNombre() }} (Perfil)</span>
+        </button>
+
         <a routerLink="/colecciones" class="block px-3 py-2 rounded-md hover:bg-indigo-600 transition-colors" (click)="isMenuOpen = false">Mis Colecciones</a>
         <a *ngIf="authService.getRole() === 'AUTOR' || authService.getRole() === 'ADMIN'" routerLink="/panel-autor" class="block px-3 py-2 rounded-md font-semibold text-indigo-200 hover:bg-indigo-600 transition-colors" (click)="isMenuOpen = false">Panel de Autor (Mis Obras)</a>
         <a *ngIf="authService.getRole() === 'ADMIN'" routerLink="/panel-admin" class="block px-3 py-2 rounded-md font-bold text-red-200 bg-red-600 hover:bg-red-500 transition-colors" (click)="isMenuOpen = false">Panel de Administración</a>

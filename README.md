@@ -25,7 +25,7 @@ El proyecto utiliza una arquitectura Cliente-Servidor separada en dos repositori
 *   **Seguridad:** Spring Security + JWT (JSON Web Tokens) Stateless
 *   **Comunicaciones Real-Time:** Server-Sent Events (SSE) para salas de chat
 *   **Despliegue:** [Railway](https://railway.app) (Docker Container + Volúmenes Persistentes para Storage de PDFs/Imágenes)
-*   **BBDD:** MySQL / PostgreSQL en Railway
+*   **BBDD:** MySQL  en Railway
 
 ---
 
@@ -45,7 +45,7 @@ Para que el tribunal y los evaluadores puedan probar todas las funcionalidades e
 
 ## 🌍 Enlaces de Despliegue en Producción
 
-*   **Aplicación Web (Vercel):** *[Reemplazar con tu enlace exacto de Vercel]*
+*   **Aplicación Web (Vercel):** `https://net-book-rust.vercel.app/`
 *   **API / Backend (Railway):** `https://netbook-backend-production.up.railway.app`
 
 *(El sistema de archivos de libros como `.pdf` y avatares se encuentra alojado persistentemente en la estructura montada de Railway)*.
@@ -82,14 +82,3 @@ npm start
 ```
 *El frontend se expondrá típicamente en `http://localhost:4200` y estará configurado para apuntar a la API local/remota según el `environment`.*
 
----
-
-## 📋 Funcionalidades Estrella Implementadas
-
-1.  **Seguridad Basada en Tokens (JWT):** Acceso asegurado validando `claims` en cada transición de capa. Uso de HTTP Interceptors en Angular para salvaguardar peticiones críticas.
-2.  **Streaming Nativo de PDFs:** El visor no fuerza la descarga del fichero al disco del usuario en local; Spring Boot envía un *stream* continuo de bytes por cabeceras renderizable en el navegador web logrando máxima retención en la aplicación.
-3.  **Salas de Chat Reactivas (SSE):** Sustituyendo métodos pesados como Long-Polling o WebSockets. Se implementó una conexión de un único sentido con `EventSource` capaz de reflejar los mensajes del foro de géneros literarios en tiempo real reduciendo el consumo de memoria del sistema y optimizando bases de datos no bloqueantes.
-4.  **Optimización Estructural:** Implementación de Patrones de Transferencia (DTOs) evitando las consultas cruzadas e infintas de ORMs (`N+1 Queries`) para el listado de catálogos concurrentes.
-
----
-*Documentación presentada conforme al Anexo I y Anexo II de la Convocatoria General del Instituto.*

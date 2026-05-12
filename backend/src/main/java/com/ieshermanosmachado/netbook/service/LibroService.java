@@ -24,7 +24,7 @@ public class LibroService {
     private final UsuarioRepository usuarioRepository;
     private final FileStorageService fileStorageService;
 
-    //  RF-04: Lógica para la creación de un Libro de Autor 
+    // Funcionalidad de creación de un libro
     public Libro publicarLibro(String emailAutor, String titulo, String sinopsis, String genero, MultipartFile archivo, MultipartFile portada) {
         log.info("[LibroService] publicarLibro - Autor: {}, Titulo: {}", emailAutor, titulo);
         // buscamos que exista el autor por email

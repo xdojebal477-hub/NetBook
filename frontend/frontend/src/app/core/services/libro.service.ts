@@ -33,7 +33,7 @@ export class LibroService {
 
   constructor(private http: HttpClient) { }
 
-  // Helper para generar los headers de Autorización con JWT
+  // Método de preparación del JWT en las cabeceras HTTP
   private getAuthHeaders(): { headers: HttpHeaders } {
     const token = localStorage.getItem('token');
     let headers = new HttpHeaders();

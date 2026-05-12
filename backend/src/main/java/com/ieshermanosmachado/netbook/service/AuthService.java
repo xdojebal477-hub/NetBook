@@ -85,7 +85,7 @@ public class AuthService {
         return new AuthResponse(usuario.getId(), jwtToken, usuario.getNombre(), usuario.getEmail(), usuario.getRol());
     }
 
-    // Helper para meter el ID y el ROL dentro del payload del token
+    // Añade el id y rol en las claims del token
     private String generarToken(Usuario usuario) {
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("id", usuario.getId());

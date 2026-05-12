@@ -150,7 +150,7 @@ public class Comunidad {
         this.mensajes = mensajes;
     }
 
-    // Helper methods para miembros y géneros
+    // Métodos para asignar miembros y géneros
     public void addMiembro(Usuario usuario) {
         if (!this.miembros.contains(usuario)) {
             this.miembros.add(usuario);

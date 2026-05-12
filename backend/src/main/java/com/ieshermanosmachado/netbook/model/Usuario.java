@@ -77,7 +77,12 @@ public class Usuario {
     public Rol getRol() { return rol; }
     public void setRol(Rol rol) { this.rol = rol; }
 
-    public String getAvatarUrl() { return avatarUrl; }
+    public String getAvatarUrl() { 
+        if (avatarUrl != null && avatarUrl.startsWith("/api/")) {
+            return "https://netbook-backend-production.up.railway.app" + avatarUrl;
+        }
+        return avatarUrl; 
+    }
     public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 
     public LocalDateTime getFechaRegistro() { return fechaRegistro; }

@@ -103,6 +103,9 @@ public class Comunidad {
     }
 
     public String getImagenUrl() {
+        if (imagenUrl != null && imagenUrl.startsWith("/api/")) {
+            return "https://netbook-backend-production.up.railway.app" + imagenUrl;
+        }
         return imagenUrl;
     }
 

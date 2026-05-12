@@ -83,7 +83,12 @@ public class Libro {
     public String getGenero() { return genero; }
     public void setGenero(String genero) { this.genero = genero; }
 
-    public String getPortadaUrl() { return portadaUrl; }
+    public String getPortadaUrl() { 
+        if (portadaUrl != null && portadaUrl.startsWith("/api/")) {
+            return "https://netbook-backend-production.up.railway.app" + portadaUrl;
+        }
+        return portadaUrl; 
+    }
     public void setPortadaUrl(String portadaUrl) { this.portadaUrl = portadaUrl; }
 
     public String getArchivoUrl() { return archivoUrl; }

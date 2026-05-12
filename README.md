@@ -35,7 +35,7 @@ Para que el tribunal y los evaluadores puedan probar todas las funcionalidades e
 
 | Rol | Correo Electrónico (Usuario) | Contraseña | Funcionalidad a probar |
 | :--- | :--- | :--- | :--- |
-| **Administrador** | `admin@netbook.com` | `admin123` | - Moderar reseñas<br>- Eliminar libros infractores<br>- Supervisión total |
+| **Administrador** | `admin@netbook.com` | `Admin12345` | - Moderar reseñas<br>- Eliminar libros infractores<br>- Supervisión total |
 | **Autor** | `autor@netbook.com` | `autor123` | - Subir nuevos libros (PDF)<br>- Editar sinopsis, portada y metadatos<br>- Visualizar "Mis Obras" |
 | **Lector** | `lector@netbook.com` | `lector123` | - Búsqueda en catálogo<br>- Favoritos / Colecciones<br>- Lectura en Visor Web<br>- Valorar y reseñar obras<br>- Unirse a Comunidades (Chat SSE) |
 

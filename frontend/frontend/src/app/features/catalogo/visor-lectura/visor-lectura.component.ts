@@ -18,6 +18,8 @@ export class VisorLecturaComponent implements OnInit, OnDestroy {
   cargando = true;
   error = '';
   archivoUrlBase = '';
+  esMovil = false;
+  private documentoAbiertoExterno = false;
 
   private readonly loadingDelayMs = 700;
 
@@ -28,9 +30,42 @@ export class VisorLecturaComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
+    this.esMovil = this.detectarDispositivoMovil();
     const id = this.route.snapshot.paramMap.get('id');
     if (id) {
       this.cargarVisor(Number(id));
+    }
+  }
+
+  private detectarDispositivoMovil(): boolean {
+    if (typeof window === 'undefined') {
+      return false;
+    }
+
+    return window.matchMedia('(max-width: 768px)').matches || /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  }
+
+  abrirEnVisorExterno(enMismaPestana = false): void {
+    if (!this.archivoUrlBase) {
+      return;
+    }
+
+    this.documentoAbiertoExterno = true;
+
+    if (enMismaPestana) {
+      window.location.href = this.archivoUrlBase;
+      return;
+    }
+
+    const ventana = window.open(this.archivoUrlBase, '_blank', 'noopener,noreferrer');
+
+    // Fallback when popup is blocked or the browser ignores blob URLs in new tabs.
+    if (!ventana) {
+      const enlace = document.createElement('a');
+      enlace.href = this.archivoUrlBase;
+      enlace.target = '_self';
+      enlace.rel = 'noopener noreferrer';
+      enlace.click();
     }
   }
 
@@ -43,6 +78,11 @@ export class VisorLecturaComponent implements OnInit, OnDestroy {
         this.archivoUrlBase = window.URL.createObjectURL(blob);
         // El sanitizer de angular debe permitir esta resource URL para usarla en un iframe
         this.pdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl(this.archivoUrlBase);
+
+        if (this.esMovil) {
+          this.abrirEnVisorExterno(true);
+        }
+
         completeAfterMinimumDelay(startedAt, this.loadingDelayMs, () => {
           this.cargando = false;
         });
@@ -59,7 +99,7 @@ export class VisorLecturaComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     // Limpiar la URL base cuando el componente se destruya para liberar mem
-    if (this.archivoUrlBase) {
+    if (this.archivoUrlBase && !this.documentoAbiertoExterno) {
       window.URL.revokeObjectURL(this.archivoUrlBase);
     }
   }

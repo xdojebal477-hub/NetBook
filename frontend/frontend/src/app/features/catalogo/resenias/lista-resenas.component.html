@@ -33,8 +33,13 @@
     <div class="resenas-list">
       <h3 class="resenas-title">Reseñas de Lectores</h3>
 
-      <div *ngIf="resenas.length === 0" class="no-resenas">
+      <div *ngIf="resenas.length === 0 && !unauthenticated" class="no-resenas">
         <p>No hay reseñas aún. ¡Sé el primero en reseñar este libro!</p>
+      </div>
+
+      <div *ngIf="unauthenticated" class="no-resenas p-6 bg-white border rounded-lg text-center">
+        <p class="mb-4 text-gray-700">Para ver las reseñas completas debes iniciar sesión.</p>
+        <a routerLink="/login" class="inline-block px-6 py-2 bg-indigo-600 text-white font-semibold rounded hover:bg-indigo-700 transition">Iniciar sesión</a>
       </div>
 
       <div *ngFor="let resena of resenas" class="resena-card">

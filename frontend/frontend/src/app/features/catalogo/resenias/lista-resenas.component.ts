@@ -20,6 +20,7 @@ export class ListaResenasComponent implements OnInit {
   resenas: ResenaResponse[] = [];
   cargando = false;
   error = '';
+  unauthenticated = false;
 
   private readonly loadingDelayMs = 700;
 
@@ -54,8 +55,15 @@ export class ListaResenasComponent implements OnInit {
         if (err.status === 404) {
           this.resenas = [];
           this.error = '';
+          this.unauthenticated = false;
+        } else if (err.status === 401 || err.status === 403) {
+          // Usuario no autenticado o sin permisos: mostrar invitación a iniciar sesión
+          this.resenas = [];
+          this.error = '';
+          this.unauthenticated = true;
         } else {
           this.error = 'Error al cargar las reseñas';
+          this.unauthenticated = false;
         }
       }
     });

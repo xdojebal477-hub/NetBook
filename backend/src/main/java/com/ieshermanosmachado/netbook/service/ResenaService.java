@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ieshermanosmachado.netbook.dto.CreateResenaRequest;
 import com.ieshermanosmachado.netbook.dto.ResenaResponse;
@@ -30,6 +31,7 @@ public class ResenaService {
     /**
      * Crear o actualizar una reseña 
      */
+    @Transactional
     public ResenaResponse crearOActualizarResena(String emailUsuario, Integer libroId, CreateResenaRequest request) {
         log.info("[ResenaService] crearOActualizarResena - email: {}, libroId: {}", emailUsuario, libroId);
         // Validar puntuación
@@ -120,6 +122,7 @@ public class ResenaService {
     /**
      * Eliminar reseña
      */
+    @Transactional
     public void eliminarResena(String emailUsuario, Integer libroId) {
         Usuario usuario = usuarioRepository.findByEmail(emailUsuario)
             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
@@ -133,6 +136,7 @@ public class ResenaService {
     /**
      * Eliminar reseña por admin
      */
+    @Transactional
     public void eliminarResenaAdmin(Integer resenaId) {
         if (!resenaRepository.existsById(resenaId)) {
             throw new RuntimeException("Reseña no encontrada");

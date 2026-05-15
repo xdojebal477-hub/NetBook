@@ -24,6 +24,8 @@ export class ComunidadChatComponent implements OnInit, OnDestroy, AfterViewCheck
   mensajes: MensajeChatResponse[] = [];
   nuevoMensajeTexto: string = '';
   miNombre: string | null = ''; // Para comparar
+  miembrosSinAvatar = new Set<number>();
+  autoresSinAvatar = new Set<number>();
 
   private sseSubscription?: Subscription;
 
@@ -118,6 +120,38 @@ export class ComunidadChatComponent implements OnInit, OnDestroy, AfterViewCheck
 
   irAlPerfil(usuarioId: number): void {
     this.router.navigate(['/usuario', usuarioId]);
+  }
+
+  getIniciales(nombre?: string | null): string {
+    if (!nombre) {
+      return '?';
+    }
+
+    const partes = nombre.trim().split(/\s+/).filter(Boolean);
+    if (partes.length === 0) {
+      return '?';
+    }
+
+    const primera = partes[0].charAt(0);
+    const segunda = partes.length > 1 ? partes[1].charAt(0) : '';
+    return (primera + segunda).toUpperCase();
+  }
+
+  onAvatarError(tipo: 'miembro' | 'autor', id: number): void {
+    if (tipo === 'miembro') {
+      this.miembrosSinAvatar.add(id);
+      return;
+    }
+
+    this.autoresSinAvatar.add(id);
+  }
+
+  mostrarAvatarMiembro(miembro: UsuarioResponse): boolean {
+    return !!miembro.avatarUrl && !this.miembrosSinAvatar.has(miembro.id);
+  }
+
+  mostrarAvatarAutor(mensaje: MensajeChatResponse): boolean {
+    return !!mensaje.autorAvatarUrl && !this.autoresSinAvatar.has(mensaje.autorId);
   }
 }
 

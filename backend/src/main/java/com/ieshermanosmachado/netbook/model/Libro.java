@@ -1,8 +1,8 @@
 package com.ieshermanosmachado.netbook.model;
 
-import com.ieshermanosmachado.netbook.config.AppUrlConfig;
-
 import java.time.LocalDateTime;
+
+import com.ieshermanosmachado.netbook.config.AppUrlConfig;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

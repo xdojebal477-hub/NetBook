@@ -1,10 +1,10 @@
 package com.ieshermanosmachado.netbook.model;
 
-import com.ieshermanosmachado.netbook.config.AppUrlConfig;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.ieshermanosmachado.netbook.config.AppUrlConfig;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;

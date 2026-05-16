@@ -1,5 +1,7 @@
 package com.ieshermanosmachado.netbook.model;
 
+import com.ieshermanosmachado.netbook.config.AppUrlConfig;
+
 import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
@@ -85,7 +87,7 @@ public class Libro {
 
     public String getPortadaUrl() { 
         if (portadaUrl != null && portadaUrl.startsWith("/api/")) {
-            return "https://netbook-backend-production.up.railway.app" + portadaUrl;
+            return AppUrlConfig.getPublicBaseUrl() + portadaUrl;
         }
         return portadaUrl; 
     }

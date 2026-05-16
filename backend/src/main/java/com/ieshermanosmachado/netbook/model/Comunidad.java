@@ -1,5 +1,7 @@
 package com.ieshermanosmachado.netbook.model;
 
+import com.ieshermanosmachado.netbook.config.AppUrlConfig;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -104,7 +106,7 @@ public class Comunidad {
 
     public String getImagenUrl() {
         if (imagenUrl != null && imagenUrl.startsWith("/api/")) {
-            return "https://netbook-backend-production.up.railway.app" + imagenUrl;
+            return AppUrlConfig.getPublicBaseUrl() + imagenUrl;
         }
         return imagenUrl;
     }

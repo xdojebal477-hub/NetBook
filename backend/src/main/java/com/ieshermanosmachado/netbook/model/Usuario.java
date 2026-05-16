@@ -1,5 +1,7 @@
 package com.ieshermanosmachado.netbook.model;
 
+import com.ieshermanosmachado.netbook.config.AppUrlConfig;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +81,7 @@ public class Usuario {
 
     public String getAvatarUrl() { 
         if (avatarUrl != null && avatarUrl.startsWith("/api/")) {
-            return "https://netbook-backend-production.up.railway.app" + avatarUrl;
+            return AppUrlConfig.getPublicBaseUrl() + avatarUrl;
         }
         return avatarUrl; 
     }

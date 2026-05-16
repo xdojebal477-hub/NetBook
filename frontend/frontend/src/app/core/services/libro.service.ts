@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 export interface LibroResponse {
   id: number;
@@ -29,7 +30,7 @@ export interface LibroUpdateRequest {
 export class LibroService {
 
   // Apunta a nuestro backend de Spring Boot (Puerto 8081 que configuramos)
-  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/libros';
+  private apiUrl = `${environment.apiUrl}/libros`;
 
   constructor(private http: HttpClient) { }
 

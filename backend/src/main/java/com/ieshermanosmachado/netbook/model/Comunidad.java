@@ -6,8 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import com.ieshermanosmachado.netbook.config.AppUrlConfig;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -105,7 +103,10 @@ public class Comunidad {
     }
 
     public String getImagenUrl() {
-        return AppUrlConfig.normalizeBackendUrl(imagenUrl);
+        if (imagenUrl != null && imagenUrl.startsWith("/api/")) {
+            return "https://netbook-backend-production.up.railway.app" + imagenUrl;
+        }
+        return imagenUrl;
     }
 
     public void setImagenUrl(String imagenUrl) {

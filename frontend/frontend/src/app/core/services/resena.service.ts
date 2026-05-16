@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 
 export interface ResenaResponse {
   id: number;
@@ -26,7 +25,7 @@ export interface CreateResenaRequest {
 })
 export class ResenaService {
 
-  private apiUrl = `${environment.apiUrl}/resenas`;
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/resenas';
 
   constructor(private http: HttpClient) { }
 
@@ -158,7 +157,7 @@ export class ResenaService {
   obtenerTodasResenas(): Observable<ResenaResponse[]> {
     console.log(`[ResenaService] ADMIN obtenerTodasResenas()`);
     return this.http.get<ResenaResponse[]>(
-      `${environment.apiUrl}/admin/resenas`,
+      'https://netbook-backend-production.up.railway.app/api/admin/resenas',
       this.getAuthHeaders()
     ).pipe(
       tap(
@@ -174,7 +173,7 @@ export class ResenaService {
   eliminarResenaAdmin(resenaId: number): Observable<void> {
     console.log(`[ResenaService] ADMIN eliminarResenaAdmin(resenaId=${resenaId})`);
     return this.http.delete<void>(
-      `${environment.apiUrl}/admin/resenas/${resenaId}`,
+      `https://netbook-backend-production.up.railway.app/api/admin/resenas/${resenaId}`,
       this.getAuthHeaders()
     ).pipe(
       tap(

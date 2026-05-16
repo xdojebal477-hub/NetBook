@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ieshermanosmachado.netbook.config.AppUrlConfig;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -80,7 +78,10 @@ public class Usuario {
     public void setRol(Rol rol) { this.rol = rol; }
 
     public String getAvatarUrl() { 
-        return AppUrlConfig.normalizeBackendUrl(avatarUrl); 
+        if (avatarUrl != null && avatarUrl.startsWith("/api/")) {
+            return "https://netbook-backend-production.up.railway.app" + avatarUrl;
+        }
+        return avatarUrl; 
     }
     public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 

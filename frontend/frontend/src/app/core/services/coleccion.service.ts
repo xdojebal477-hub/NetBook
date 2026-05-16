@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { LibroResponse } from './libro.service';
-import { environment } from '../../../environments/environment';
 
 export interface ColeccionResponse {
   id: number;
@@ -22,7 +21,7 @@ export interface ColeccionRequest {
   providedIn: 'root'
 })
 export class ColeccionService {
-  private apiUrl = `${environment.apiUrl}/colecciones`;
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/colecciones';
 
   constructor(private http: HttpClient) { }
 

@@ -9,13 +9,12 @@ import {
   MensajeChatRequest,
   Page
 } from '../../models/comunidad.model';
-import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ComunidadService {
-  private apiUrl = `${environment.apiUrl}/comunidades`;
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/comunidades';
 
   constructor(private http: HttpClient, private zone: NgZone) { }
 

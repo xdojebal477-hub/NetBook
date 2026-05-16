@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { environment } from '../../../environments/environment';
 
 export interface UsuarioAdminResponse {
   id: number;
@@ -52,7 +51,7 @@ export interface CrearComunidadAdminRequest {
   providedIn: 'root'
 })
 export class AdminService {
-  private apiUrl = `${environment.apiUrl}/admin`;
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/admin';
 
   constructor(private http: HttpClient) {}
 
@@ -107,7 +106,7 @@ export class AdminService {
   }
 
   getMiembrosComunidad(id: number): Observable<UsuarioAdminResponse[]> {
-    return this.http.get<{ content: UsuarioAdminResponse[] }>(`${environment.apiUrl}/comunidades/${id}/miembros`, { headers: this.getAuthHeaders() })
+    return this.http.get<{ content: UsuarioAdminResponse[] }>(`https://netbook-backend-production.up.railway.app/api/comunidades/${id}/miembros`, { headers: this.getAuthHeaders() })
       .pipe(map(response => response.content));
   }
 

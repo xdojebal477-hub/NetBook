@@ -3,14 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AuthResponse, LoginRequest, RegistroRequest } from '../models/auth.models';
-import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private apiUrl = `${environment.apiUrl}/auth`;
+  private apiUrl = 'https://netbook-backend-production.up.railway.app/api/auth';
 
   constructor(private http: HttpClient) { }
 

@@ -80,10 +80,7 @@ public class Usuario {
     public void setRol(Rol rol) { this.rol = rol; }
 
     public String getAvatarUrl() { 
-        if (avatarUrl != null && avatarUrl.startsWith("/api/")) {
-            return AppUrlConfig.getPublicBaseUrl() + avatarUrl;
-        }
-        return avatarUrl; 
+        return AppUrlConfig.normalizeBackendUrl(avatarUrl); 
     }
     public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
 

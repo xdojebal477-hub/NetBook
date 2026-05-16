@@ -105,10 +105,7 @@ public class Comunidad {
     }
 
     public String getImagenUrl() {
-        if (imagenUrl != null && imagenUrl.startsWith("/api/")) {
-            return AppUrlConfig.getPublicBaseUrl() + imagenUrl;
-        }
-        return imagenUrl;
+        return AppUrlConfig.normalizeBackendUrl(imagenUrl);
     }
 
     public void setImagenUrl(String imagenUrl) {

@@ -1,18 +1,20 @@
 package com.ieshermanosmachado.netbook.config;
 
-import jakarta.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @Component
 public class AppUrlConfig {
 
+    private static final String LOCAL_BACKEND_BASE = "http://localhost:8080";
+    private static final String LOCAL_LOOPBACK_BASE = "http://127.0.0.1:8080";
     private static String configuredPublicBaseUrl = "";
 
-    @Value("${app.public-base-url:http://localhost:8080}")
+    @Value("${app.public-base-url:}")
     public void setPublicBaseUrl(String publicBaseUrl) {
         AppUrlConfig.configuredPublicBaseUrl = publicBaseUrl;
     }
@@ -35,6 +37,26 @@ public class AppUrlConfig {
             return standardPort ? scheme + "://" + host : scheme + "://" + host + ":" + port;
         }
 
-        return "http://localhost:8080";
+        return LOCAL_BACKEND_BASE;
+    }
+
+    public static String normalizeBackendUrl(String url) {
+        if (url == null || url.isBlank()) {
+            return url;
+        }
+
+        if (url.startsWith("/api/")) {
+            return getPublicBaseUrl() + url;
+        }
+
+        if (url.startsWith(LOCAL_BACKEND_BASE)) {
+            return getPublicBaseUrl() + url.substring(LOCAL_BACKEND_BASE.length());
+        }
+
+        if (url.startsWith(LOCAL_LOOPBACK_BASE)) {
+            return getPublicBaseUrl() + url.substring(LOCAL_LOOPBACK_BASE.length());
+        }
+
+        return url;
     }
 }

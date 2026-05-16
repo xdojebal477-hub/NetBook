@@ -86,10 +86,7 @@ public class Libro {
     public void setGenero(String genero) { this.genero = genero; }
 
     public String getPortadaUrl() { 
-        if (portadaUrl != null && portadaUrl.startsWith("/api/")) {
-            return AppUrlConfig.getPublicBaseUrl() + portadaUrl;
-        }
-        return portadaUrl; 
+        return AppUrlConfig.normalizeBackendUrl(portadaUrl); 
     }
     public void setPortadaUrl(String portadaUrl) { this.portadaUrl = portadaUrl; }
 
